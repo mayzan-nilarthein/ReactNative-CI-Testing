@@ -1,1 +1,49 @@
 name: React Native CI Testing
+
+env:
+    main_project_module: CICDTEST
+
+on:
+    push:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+    steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Set today date as env variable
+          run: echo "date_today=$(date + '%Y-%m-%d')" >> $GITHUB_ENV
+
+        - name: Set repository name as env variable
+          run: echo "repository_name=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+
+        - name: Setup JDK
+          uses: actions/setup-java@v4
+          with:
+            distribution: 'zulu' # See 'Supported distributions' for available options
+            java-version: '17'
+
+        - name: Setup Node
+          uses: actions/setup-node@v4
+          with:
+            node-version: 16.x
+
+        - name: Install Dependencies
+          run: yarn install
+
+        − name: Setup Android SDK
+          uses: android-actions/setup-android@v3
+
+        - name: Build Android APK
+          run: |
+            cd android
+            ./gradlew assembleRelease
+
+        - name: Upload APK Release - ${{ env.repository_name }}
+          uses: actions/upload-artifact@v4
+          with:
+            name: ${{ env.date_tody }} - ${{env.repository_name}} - APK(s) release generated
+            path: android/app/build/outputs/apk/release/
