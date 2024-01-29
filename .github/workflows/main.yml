@@ -8,10 +8,10 @@ on:
 
 jobs:
     build:
-        runs-on: ubuntu-latest
+      runs-on: ubuntu-latest
 
-    steps:
-        - name: Checkout repository
+      steps:
+        - name: Checkout Repository
           uses: actions/checkout@v4
 
         - name: Set today date as env variable
@@ -34,7 +34,7 @@ jobs:
         - name: Install Dependencies
           run: yarn install
 
-        − name: Setup Android SDK
+        - name: Setup Android SDK
           uses: android-actions/setup-android@v3
 
         - name: Build Android APK
